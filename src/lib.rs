@@ -14,7 +14,11 @@ pub fn extension_checker(env_args: &Vec<String>) -> Result<String, &'static str>
 }
 
 pub fn run(file: String) -> Result<(), Box<dyn Error>> {
-    let program = fs::read_to_string(file).expect("Some problem occurred");
-    println!("{}", program);
+    let program = fs::read_to_string(file)?;
+    tokenizer(program);
     Ok(())
+}
+
+fn tokenizer(program: String) {
+    println!("{}", program);
 }
