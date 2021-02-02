@@ -1,5 +1,10 @@
+mod modules;
+mod models;
+
 use std::fs;
 use std::error::Error;
+
+use modules::lexer;
 
 pub fn extension_checker(env_args: &Vec<String>) -> Result<String, &'static str> {
     let filename_extension: Vec<&str> = env_args[1].split('.').collect();
@@ -15,10 +20,12 @@ pub fn extension_checker(env_args: &Vec<String>) -> Result<String, &'static str>
 
 pub fn run(file: String) -> Result<(), Box<dyn Error>> {
     let program = fs::read_to_string(file)?;
-    tokenizer(program);
+    let tokens = lexer::tokenizer(program)?;
+    for token in tokens {
+        println!("{:?}", token.token_type);
+        println!("{:?}", token.value);
+        println!("")
+    }
     Ok(())
 }
 
-fn tokenizer(program: String) {
-    println!("{}", program);
-}
