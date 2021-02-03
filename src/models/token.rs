@@ -2,6 +2,7 @@
 pub enum TokenType {
     OpenParenthesis,
     CloseParenthesis,
+    Operator,
     Character,
     Number,
     SpecialChar,
@@ -10,6 +11,7 @@ pub enum TokenType {
 
 #[derive(Debug)]
 pub enum TokenDataType {
+    Word(String),
     Character(char),
     Number(i32),
     Keyword(String),
