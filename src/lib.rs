@@ -4,28 +4,45 @@ mod models;
 use std::fs;
 use std::error::Error;
 
-use modules::lexer;
+use modules::tokenizer;
 
-pub fn extension_checker(env_args: &Vec<String>) -> Result<String, &'static str> {
-    let filename_extension: Vec<&str> = env_args[1].split('.').collect();
-    let filename = filename_extension[0].clone();
-    let extension = filename_extension[1].clone();
+#[derive(Debug)]
+pub struct Config {
+    pub filename: String,
+}
 
-    if extension == "fer" {
-        Ok(String::from(filename) + "." + extension)
-    } else {
-        Err("Please use extension .fer for program files")
+impl Config {
+    pub fn new(args: &Vec<String>) -> Result<Config, &'static str> {
+        if args.len() < 2 {
+            return Err("NoFileNameError");
+        }
+
+        let filename_extension: Vec<&str> = args[1].split('.').collect();
+
+        if filename_extension.len() < 2 {
+            return Err("InvalidExtensionError");
+        }
+
+        let filename = filename_extension[0].clone();
+        let extension = filename_extension[1].clone();
+        
+        if extension == "fer" {
+            Ok(Config{ filename: String::from(filename) + "." + extension })
+        } else {
+            Err("InvalidExtensionError")
+        }
+    }
+
+    pub fn run(file: String) -> Result<(), Box<dyn Error>> {
+        let program = fs::read_to_string(file)?;
+        let tokens = tokenizer::lexer(program)?;
+        for token in tokens {
+            println!("{:?}", token.token_type);
+            println!("{:?}", token.value);
+            println!("")
+        }
+        Ok(())
     }
 }
 
-pub fn run(file: String) -> Result<(), Box<dyn Error>> {
-    let program = fs::read_to_string(file)?;
-    let tokens = lexer::tokenizer(program)?;
-    for token in tokens {
-        println!("{:?}", token.token_type);
-        println!("{:?}", token.value);
-        println!("")
-    }
-    Ok(())
-}
 
