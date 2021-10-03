@@ -1,10 +1,12 @@
-mod modules;
 mod models;
+mod modules;
 
-use std::fs;
 use std::error::Error;
+use std::fs;
 
 use modules::tokenizer;
+
+// TODO: Implement Error handling structure
 
 #[derive(Debug)]
 pub struct Config {
@@ -25,14 +27,16 @@ impl Config {
 
         let filename = filename_extension[0].clone();
         let extension = filename_extension[1].clone();
-        
         if extension == "fer" {
-            Ok(Config{ filename: String::from(filename) + "." + extension })
+            Ok(Config {
+                filename: String::from(filename) + "." + extension,
+            })
         } else {
             Err("InvalidExtensionError")
         }
     }
 
+    // NOTE: program is being extracted in String format
     pub fn run(file: String) -> Result<(), Box<dyn Error>> {
         let program = fs::read_to_string(file)?;
         let tokens = tokenizer::lexer(program)?;
@@ -44,5 +48,3 @@ impl Config {
         Ok(())
     }
 }
-
-
