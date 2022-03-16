@@ -9,39 +9,57 @@ use regex::Regex;
 pub fn lexer(program: String) -> Result<Vec<token::Token>, &'static str> {
     let mut tokens: Vec<token::Token> = Vec::new();
 
-    let numbers = Regex::new(r"[0-9]").unwrap();
-    let alphabets = Regex::new(r"[a-zA-Z]").unwrap();
-    let operators = Regex::new(r"[=+-/*]").unwrap();
+    // FIXME: redo the function to match correct tokens
+
+    let number_token = Regex::new(r"[0-9]").unwrap();
+    let _alphabets = Regex::new(r"[a-zA-Z]").unwrap();
+    let _operators = Regex::new(r"[=+-/*]").unwrap();
     let _whitespace = Regex::new(r"[\s]").unwrap();
+
+    // INFO: variables for letters and numbers
+    let mut number = 0;
+
     for token in program.chars() {
-        if numbers.is_match(&token.to_string()) {
+        // BUG: Numbers are being matched as characters, investigate further
+        if number_token.is_match(&token.to_string()) {
+            number = number * 10 + token.to_string().parse::<i32>().unwrap();
+            println!("{}", number);
+        } else {
+            // BUG: When an end of number token is reached, a number token still gets pushed on every iteration
+            // because of the else block
             tokens.push(token::Token {
                 token_type: token::TokenType::Number,
-                value: token::TokenDataType::Number(token.to_string().parse::<i32>().unwrap()),
+                value: token::TokenDataType::Number(number),
             });
-        } else if alphabets.is_match(&token.to_string()) {
-            tokens.push(token::Token {
-                token_type: token::TokenType::Character,
-                value: token::TokenDataType::Word(token.to_string()),
-            });
-        } else if operators.is_match(&token.to_string()) {
-            tokens.push(token::Token {
-                token_type: token::TokenType::Operator,
-                value: token::TokenDataType::Character(token),
-            });
-        } else {
-            tokens.push(token::Token {
-                token_type: match token {
-                    '(' => token::TokenType::OpenParenthesis,
-                    ')' => token::TokenType::CloseParenthesis,
-                    '{' => token::TokenType::BeginBracket,
-                    '}' => token::TokenType::EndBracket,
-                    _ => token::TokenType::SpecialChar,
-                },
-                value: token::TokenDataType::Character(token),
-            });
+            number = 0;
         }
+        
+    
     }
     Ok(tokens)
     // Err("cant lex code")
 }
+
+
+//     if alphabets.is_match(&token.to_string()) {
+    //         tokens.push(token::Token {
+    //             token_type: token::TokenType::Character,
+    //             value: token::TokenDataType::Word(token.to_string()),
+    //         });
+    //     } else if operators.is_match(&token.to_string()) {
+    //         tokens.push(token::Token {
+    //             token_type: token::TokenType::Operator,
+    //             value: token::TokenDataType::Character(token),
+    //         });
+    //     } else {
+    //         tokens.push(token::Token {
+    //             token_type: match token {
+    //                 '(' => token::TokenType::LeftParenthesis,
+    //                 ')' => token::TokenType::RightParenthesis,
+    //                 '{' => token::TokenType::BeginBracket,
+    //                 '}' => token::TokenType::EndBracket,
+    //                 _ => token::TokenType::SpecialChar,
+    //             },
+    //             value: token::TokenDataType::Character(token),
+    //         });
+    //     }

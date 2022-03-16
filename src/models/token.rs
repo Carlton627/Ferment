@@ -1,15 +1,21 @@
 #[derive(Debug)]
 #[allow(unused)]
 pub enum TokenType {
-    OpenParenthesis,
-    CloseParenthesis,
+    LeftParenthesis,
+    RightParenthesis,
     BeginBracket,
     EndBracket,
     Operator,
-    Character,
     Number,
-    SpecialChar,
     Keyword,
+    Identifier,
+
+    /* INFO: 
+     * The token types below are to be scrutinized for their use, IDENTIFER token type has been 
+     * added to the enum.
+     */
+    SpecialChar,
+    Character,
     Newline,
 }
 

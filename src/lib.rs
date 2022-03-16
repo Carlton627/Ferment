@@ -78,7 +78,7 @@ impl Config {
         }
     }
 
-    // NOTE: program is being extracted in String format
+    // INFO: program is being extracted in String format
     pub fn run(file: String) -> Result<(), Box<dyn Error>> {
         let program = fs::read_to_string(file)?;
         let tokens = tokenizer::lexer(program)?;
